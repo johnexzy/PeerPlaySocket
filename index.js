@@ -20,14 +20,14 @@ io.on("connect", (socket) => {
   });
 
   socket.on("send_msg", (data) => {
-    console.log(data, "DATA");
+    console.log(data, "DATA", socket.id);
     // This will send a message to a specific room ID
     console.log(data.roomId);
     socket.to(data.roomId).emit("receive_msg", data);
   });
 
   socket.on("seek", (data) => {
-    console.log(data, "Seek Data");
+    console.log(data, "Seek Data", socket.id);
 
     io.to(data.roomId).emit("seek", { seekTime: data.seekTime });
   });
