@@ -1,47 +1,19 @@
-const http = require("http");
-const { Server } = require("socket.io");
-const cors = require("cors");
+import client from "@/utils/client";
+import { io } from "socket.io-client";
+export default function useSocket() {
+  // start the socket server
 
-const httpServer = http.createServer();
+  try {
+    const socket = io("http://localhost:4000");
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*", // Replace with your frontend URL
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true,
-  },
-});
+    socket.on("connect", () => {
+      console.log("Connected");
+    });
 
-io.on("connect", (socket) => {
-  socket.on("join_room", (roomId) => {
-    socket.join(roomId);
-    console.log(`user with id-${socket.id} joined room - ${roomId}`);
-  });
-
-  socket.on("send_msg", (data) => {
-    console.log(data, "DATA", socket.id);
-    // This will send a message to a specific room ID
-    console.log(data.roomId);
-    socket.to(data.roomId).emit("receive_msg", data);
-  });
-
-  socket.on("seek", (data) => {
-    console.log(data, "Seek Data", socket.id);
-
-    io.to(data.roomId).emit("seek", { seekTime: data.seekTime });
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
-  });
-
-  console.log("socket connect", socket.id);
-  socket.broadcast.emit("welcome", `Welcome ${socket.id}`);
-
-});
-
-const PORT = process.env.PORT || 4000;
-httpServer.listen(PORT, () => {
-  console.log(`Socket.io server is running on port ${PORT}`);
-});
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+    });
+ 
+    return socket;
+  } catch (error) {}
+}
