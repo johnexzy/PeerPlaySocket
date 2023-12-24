@@ -4,6 +4,8 @@ const cors = require("cors");
 
 const httpServer = http.createServer();
 const PORT = process.env.PORT || 4000;
+
+// Initialize socket connection 
 const io = new Server(httpServer, {
   cors: {
     origin: "*", // Replace with your frontend URL
@@ -18,6 +20,10 @@ io.on("connect", (socket) => {
     socket.join(roomId);
     console.log(`user with id-${socket.id} joined room - ${roomId}`);
   });
+
+  socket.on("create_play", (data) => {
+    console.log(data)
+  })
 
   socket.on("send_msg", (data) => {
     console.log(data, "DATA", socket.id);
