@@ -31,6 +31,12 @@ io.on("connect", (socket) => {
     socket.broadcast.to(data.roomId).emit("receive_msg", data);
   });
 
+  socket.on("chat", (data) => {
+    console.log(data, "Chat", socket.id);
+  
+    socket.to(data.roomId).emit("chat", data);
+  });
+
   socket.on("seek", (data) => {
     console.log(data, "Seek Data");
 
